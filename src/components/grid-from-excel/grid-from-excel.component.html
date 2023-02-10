@@ -1,0 +1,55 @@
+<br>
+<div style="background-color: white">
+  <div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--3-col">
+      <mat-form-field>
+        <input matInput placeholder="Match Threshold" value="">
+      </mat-form-field>
+    </div>
+    <div class="mdl-cell mdl-cell--3-col">
+      <button mat-raised-button color="primary" (click)="applyThreshold()">Apply Threshold</button>
+    </div>
+    <div class="mdl-cell mdl-cell--3-col">
+      <button mat-raised-button color="primary" (click)="importExcel()">Import Data</button>
+    </div>
+    <input type="file" class="file-input"
+       (change)="onFileSelected($event)">
+  </div>
+</div>
+<br>
+<div class="tower-grid">
+  <ag-grid-angular
+  style="width: 100%; height: 100%;"
+  [gridOptions]="gridOptions"
+  [showBorders]="true"
+  [rowHeight]="34"
+  [headerHeight]="45"
+  class="ag-theme-material"
+  [columnDefs]="columnDefs"
+  [rowData]="rowData"
+  (gridReady)="onGridReady($event)"
+  [suppressRowClickSelection]="suppressRowClickSelection"
+  [rowSelection]="rowSelection"
+  [components]="components"
+  (selectionChanged)="onSelectionChanged($event)"
+  [gridOptions]="gridOptions"
+  [frameworkComponents]="frameworkComponents"
+  (selectEditorValueChange)="selectEditorValueChange($event)"
+  [headerHeight]="headerHeight"
+  [pagination]="pagination"
+  [paginationAutoPageSize]="paginationAutoPageSize"
+  [editType]="editType"
+  [rowDeselection]="rowDeselection"
+  (modelUpdated)="onGridModelUpdated($event)"
+  [loadingOverlayComponent]="'GridOverlayComponent'"
+  [loadingOverlayComponentParams]="gridOverlayComponentParams"
+  [getContextMenuItems]="getContextMenuItems"
+  [rowModelType]="rowModelType"
+  [enableServerSideSorting]="enableServerSideSorting"
+  [suppressRowClickSelection]="suppressRowClickSelection"
+  (newColumnsLoaded)="onNewColumnsLoaded($event)"
+  [pinnedBottomRowData]="pinnedBottomRowData"
+  [getRowStyle]="getRowStyle"
+  (rowDataChanged)="onRowDataChanged($event)"
+></ag-grid-angular>
+</div>
