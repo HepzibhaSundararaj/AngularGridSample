@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MockData } from '../../constants/mock-data';
 import { Bordereau } from '../import-wizard/bordereau/bordereau.model';
 import { AppSharedService } from '../../services/app-shared/app-shared.service';
 import { GridFromExcelService } from './grid-from-excel.service';
@@ -86,6 +85,7 @@ export class GridFromExcelComponent implements OnInit {
 
   overlayLoadingTemplate: any;
   gridOverlayComponentParams: { loadingMessage: string };
+  fileName = ''
 
   @Input()
   getContextMenuItems: any = undefined;
@@ -112,7 +112,6 @@ export class GridFromExcelComponent implements OnInit {
         agGridBaseClass: this,
         gridParent: this.gridParent
       },
-      // enableFilter: true,
       defaultColDef: {
         // editable: true
         // stopEditingWhenGridLosesFocus=true,
@@ -130,10 +129,10 @@ export class GridFromExcelComponent implements OnInit {
     this.gridOptions = {
       columnDefs: [
         { field: '0', minWidth: 180 },
-       this.createColumnDef('First Name', (name) => name.length > 1),
-        { field: 'Last Name', minWidth: 150 },
-        { field: 'Age' },
-        { field: 'Country', minWidth: 130 },
+        this.createColumnDef('First Name', (value) => value.length > 1),
+        this.createColumnDef('Last Name', (value) => value.length > 1),
+        this.createColumnDef('Age', (value) => value.length > 1),
+        this.createColumnDef('Country', (value) => value.length > 1),
         { field: 'Date', minWidth: 100 },
         { field: 'Id' }
       ],
@@ -161,7 +160,7 @@ export class GridFromExcelComponent implements OnInit {
       this.syncValidator(
         params.newValue,
         validateFn
-       
+
       );
       return false;
     }
@@ -171,35 +170,12 @@ export class GridFromExcelComponent implements OnInit {
       headerName: field,
       field,
       valueGetter: params => params.data[field],
-      valueSetter:this.syncValueSetter(validationFn),
+      valueSetter: this.syncValueSetter(validationFn),
       editable: true,
-      cellRenderer:  function(params) {
-        console.log(params)
-        let tick = `<i class="fa fa-check" aria-hidden="true"></i>`;
-        let cross = `<i class="fa fa-times" aria-hidden="true"></i> `;
-        let icon = params.value.lastValidation === true ? tick : cross;
-        return params.value.length > 0? params.value : `<div style="border: 1px solid red; height:90%">${' '}</div>`;
+      cellRenderer: function (params) {
+        return params.value.length > 0 ? params.value : `<div style="border: 1px solid red; height:90%">${' '}</div>`;
       }
     };
-  }
-  applyThreshold() { }
-
-
-
-  // XMLHttpRequest in promise format
-  makeRequest(method, url, success, error) {
-    var httpRequest = new XMLHttpRequest();
-    httpRequest.open('GET', url, true);
-    httpRequest.responseType = 'arraybuffer';
-
-    httpRequest.open(method, url);
-    httpRequest.onload = function () {
-      success(httpRequest.response);
-    };
-    httpRequest.onerror = function () {
-      error(httpRequest.response);
-    };
-    httpRequest.send();
   }
 
   // read the raw data and convert it to a XLSX workbook
@@ -222,21 +198,7 @@ export class GridFromExcelComponent implements OnInit {
   populateGrid(workbook) {
     // our data is in the first sheet
     var firstSheetName = workbook.SheetNames[0];
-    var worksheet = workbook.Sheets[firstSheetName];
-
-    // we expect the following columns to be present
-    // var columns = {
-    //   A: 'athlete',
-    //   B: 'age',
-    //   C: 'country',
-    //   D: 'year',
-    //   E: 'date',
-    //   F: 'sport',
-    //   G: 'gold',
-    //   H: 'silver',
-    //   I: 'bronze',
-    //   J: 'total',
-    // };
+    var worksheet = workbook.Sheets[firstSheetName]
 
     var columns = {
 
@@ -247,7 +209,8 @@ export class GridFromExcelComponent implements OnInit {
       E: 'Country',
       F: 'Age',
       G: 'Date',
-      H: 'Id',    };
+      H: 'Id',
+    };
     var rowData = [];
 
     // start at the 2nd row - the first row are the headers
@@ -286,60 +249,29 @@ export class GridFromExcelComponent implements OnInit {
     this.gridReadyComplete.emit({ baseGrid: this, params: params });
   }
 
-  // importExcel() {
-  //   this.makeRequest(
-  //     'GET',
-  //     'https://www.ag-grid.com/example-assets/olympic-data.xlsx',
-  //     // success
-  //     (data) => {
-  //       var workbook = this.convertDataToWorkbook(data);
-
-  //       this.populateGrid(workbook);
-  //     },
-  //     // error
-  //     function (error) {
-  //       throw error;
-  //     }
-  //   );
-  // }
-
-  importExcel() {
-    this.makeRequest(
-      'GET',
-      'https://www.ag-grid.com/example-assets/olympic-data.xlsx',
-      // success
-      (data) => {
-
-        console.log(data)
-        var workbook = this.convertDataToWorkbook(data);
-
-        this.populateGrid(workbook);
-      },
-      // error
-      function (error) {
-        throw error;
-      }
-    );
+  export() {
+    console.log(this.gridApi)
+    this.gridApi.exportDataAsCsv()
   }
-fileName = ''
+
   onFileSelected(event) {
 
-    const file:File = event.target.files[0];
+    const file: File = event.target.files[0];
 
     if (file) {
 
-        this.fileName = file.name;
+      this.fileName = file.name;
 
-       console.log(file)
+      console.log(file)
 
-       let fileReader: FileReader = new FileReader();
-       let self = this;
-       fileReader.onloadend = (x) => {
+      let fileReader: FileReader = new FileReader();
+      let self = this;
+      fileReader.onloadend = (x) => {
         var workbook = this.convertDataToWorkbook(fileReader.result);
 
         this.populateGrid(workbook);
-       }
-       fileReader.readAsArrayBuffer(file);
+      }
+      fileReader.readAsArrayBuffer(file);
     }
-}
+  }
 }

@@ -14,10 +14,10 @@ export class AppComponent implements OnInit {
     }
 
     loadRoutes(): void {
-        this.routes.push(new AppRouterLink('//dashboard', 'Dashboard'));
-        this.routes.push(new AppRouterLink('//name-matching', 'Ag-Grid Example'));
-        this.routes.push(new AppRouterLink('//bordereau', 'Form Validation Example'));
-        this.routes.push(new AppRouterLink('//grid-from-excel', 'Grid import example'));
+        // this.routes.push(new AppRouterLink('//dashboard', 'Dashboard'));
+        // this.routes.push(new AppRouterLink('//name-matching', 'Ag-Grid Example'));
+        // this.routes.push(new AppRouterLink('//bordereau', 'Form Validation Example'));
+        this.routes.push(new AppRouterLink('//grid-from-excel', 'Grid import'));
     }
 }
 
