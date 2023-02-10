@@ -10,7 +10,7 @@
     "prod-build": "ng build --prod --aot --output-path \".\\dist\\prod\" --base-href=/Bms/",
     "qa-build": "ng build --configuration=qa --output-path \".\\dist\\qa\" --base-href=/BmsQA/",
     "uat-build": "ng build --configuration=uat --output-path \".\\dist\\uat\" --base-href=/BmsUAT/",
-    "build": "npm run prod-build && npm run qa-build && npm run uat-build",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider;ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
